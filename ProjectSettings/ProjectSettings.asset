@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
+  companyName: MoviesForAndroid
   productName: JaviMovieApi
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -137,7 +137,11 @@ PlayerSettings:
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
   bundleVersion: 0.1
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 11400000, guid: 670e758ffd2a54744add6191f35a7ff9, type: 2}
+  - {fileID: -7730793198484015215, guid: 28d7752d7a96d4641be95b57a35ab940, type: 2}
+  - {fileID: 11400000, guid: 1db7fab7960711248acff2ba8bddbb2f, type: 2}
+  - {fileID: 11400000, guid: 435ec607aa020c6418b8deb993da8aa1, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
