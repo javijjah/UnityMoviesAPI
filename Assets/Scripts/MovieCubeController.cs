@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.Serialization;
 
 public class MovieCubeController : MonoBehaviour
@@ -52,5 +54,54 @@ public class MovieCubeController : MonoBehaviour
     void LeftRotate()
     {
         transform.Rotate(new Vector3(0, -90, 0));
+    }
+    
+    IEnumerator GetImg()
+    {
+        UnityWebRequest data = UnityWebRequest.Get("https://www.omdbapi.com/?s=glory&apikey=bec0dc5f");
+        yield return data.SendWebRequest();
+
+        if (data.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.LogError(data.error);
+        }
+        else
+        {
+            Debug.Log(data.downloadHandler.text);
+            SearchData mySearch = JsonUtility.FromJson<SearchData>(data.downloadHandler.text);
+            Debug.Log(mySearch.Search[0].Poster);
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture(mySearch.Search[1].Poster);
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.ConnectionError)
+            {
+                Debug.LogError(www.error);
+            }
+            else
+            {
+                Texture2D loadedTexture = DownloadHandlerTexture.GetContent(www);
+                //todo implementar todo esto a mi modo y unir los sprites a las caras de los cubos
+                //posterSprite.sprite = Sprite.Create(loadedTexture, new Rect(0f, 0f, loadedTexture.width, loadedTexture.height), Vector2.zero);
+                //posterSprite.SetNativeSize();
+            }
+        }
+        yield break;
+        
+    }
+    [Serializable]
+    public class SearchData
+    {
+        public List<MovieData> Search;
+        public string totalResults;
+        public string Response;
+    }
+    [Serializable]
+    public class MovieData
+    {
+        public string Title;
+        public string Year;
+        public string imdbID;
+        public string Type;
+        public string Poster;
     }
 }
