@@ -12,6 +12,7 @@ public class MovieCubeController : MonoBehaviour
     private GameObject _movieCube;
     private Material _testMaterial;
     private List<MovieData> _loadedMovies = new();
+    private int _numberOfRotations; 
     private GameObject _caraDel;
     private GameObject _caraDet;
     private GameObject _caraDer;
@@ -48,7 +49,7 @@ public class MovieCubeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GenerateCubeImages();
+            GenerateCubeImages();
     }
 
     void GetRandomMoviePageLink()
@@ -79,11 +80,7 @@ public class MovieCubeController : MonoBehaviour
             yield return null;
         }
     }
-    void LeftRotate()
-    {
-        transform.Rotate(new Vector3(0, -90, 0));
-    }
-
+    
     IEnumerator GetPage(string req)
     {
         UnityWebRequest data =
