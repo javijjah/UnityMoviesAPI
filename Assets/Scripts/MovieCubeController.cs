@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
+using UnityEngine.UIElements;
 
 public class MovieCubeController : MonoBehaviour
 {
@@ -42,12 +41,20 @@ public class MovieCubeController : MonoBehaviour
         _rendererDet = _caraDet.GetComponent<Renderer>();
         _rendererDer = _caraDer.GetComponent<Renderer>();
         _rendererIzq = _caraIzq.GetComponent<Renderer>();
-        StartCoroutine(GetPage());
+        StartCoroutine(GetPage("https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=hello"));
+        RightRotate();
     }
 
     // Update is called once per frame
     void Update()
     {
+        GenerateCubeImages();
+    }
+
+    void GetRandomMoviePageLink()
+    {
+        //todo
+        string baselink = "https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=hello";
     }
 
     void GenerateCubeImages()
@@ -60,18 +67,27 @@ public class MovieCubeController : MonoBehaviour
 
     void RightRotate()
     {
-        transform.Rotate(new Vector3(0, 90, 0));
+        StartCoroutine(Rotationcor());
     }
 
+    IEnumerator Rotationcor()
+    {
+        Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 90, 0));
+        while (transform.rotation != targetRotation)
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * 200);
+            yield return null;
+        }
+    }
     void LeftRotate()
     {
         transform.Rotate(new Vector3(0, -90, 0));
     }
 
-    IEnumerator GetPage()
+    IEnumerator GetPage(string req)
     {
         UnityWebRequest data =
-            UnityWebRequest.Get("https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=hello");
+            UnityWebRequest.Get(req);
         yield return data.SendWebRequest();
         if (data.result == UnityWebRequest.Result.ConnectionError)
         {
