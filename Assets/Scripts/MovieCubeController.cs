@@ -28,8 +28,7 @@ public class MovieCubeController : MonoBehaviour
         caraDet = GameObject.Find("caraDet");
         caraDer = GameObject.Find("caraDer");
         caraIzq = GameObject.Find("caraIzq");
-        generateCubeImages();
-        
+        StartCoroutine(GetImg());
     }
 
     // Update is called once per frame
@@ -60,7 +59,6 @@ public class MovieCubeController : MonoBehaviour
     {
         UnityWebRequest data = UnityWebRequest.Get("https://www.omdbapi.com/?s=glory&apikey=bec0dc5f");
         yield return data.SendWebRequest();
-
         if (data.result == UnityWebRequest.Result.ConnectionError)
         {
             Debug.LogError(data.error);
@@ -80,13 +78,12 @@ public class MovieCubeController : MonoBehaviour
             else
             {
                 Texture2D loadedTexture = DownloadHandlerTexture.GetContent(www);
+                texturaDel = loadedTexture;
+                print(mySearch.Search[0].Title);
+                generateCubeImages();
                 //todo implementar todo esto a mi modo y unir los sprites a las caras de los cubos
-                //posterSprite.sprite = Sprite.Create(loadedTexture, new Rect(0f, 0f, loadedTexture.width, loadedTexture.height), Vector2.zero);
-                //posterSprite.SetNativeSize();
             }
         }
-        yield break;
-        
     }
     [Serializable]
     public class SearchData
