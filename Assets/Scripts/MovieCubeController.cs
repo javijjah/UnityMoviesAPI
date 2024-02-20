@@ -43,7 +43,7 @@ public class MovieCubeController : MonoBehaviour
         _rendererDet = _caraDet.GetComponent<Renderer>();
         _rendererDer = _caraDer.GetComponent<Renderer>();
         _rendererIzq = _caraIzq.GetComponent<Renderer>();
-        StartCoroutine(GetPage("https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=hello"));
+        StartCoroutine(GetPage("https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=Lord"));
     }
 
     // Update is called once per frame
