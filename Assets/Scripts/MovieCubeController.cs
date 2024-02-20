@@ -12,7 +12,8 @@ public class MovieCubeController : MonoBehaviour
     private GameObject _movieCube;
     private Material _testMaterial;
     private List<MovieData> _loadedMovies = new();
-    private int _numberOfRotations; 
+    private Quaternion _targetRotation;
+    
     private GameObject _caraDel;
     private GameObject _caraDet;
     private GameObject _caraDer;
@@ -43,7 +44,6 @@ public class MovieCubeController : MonoBehaviour
         _rendererDer = _caraDer.GetComponent<Renderer>();
         _rendererIzq = _caraIzq.GetComponent<Renderer>();
         StartCoroutine(GetPage("https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=hello"));
-        RightRotate();
     }
 
     // Update is called once per frame
@@ -66,14 +66,21 @@ public class MovieCubeController : MonoBehaviour
         _rendererIzq.material.SetTexture(MainTex, texturaIzq);
     }
 
-    void RightRotate()
+    public void RightRotate()
     {
-        StartCoroutine(Rotationcor());
+        Debug.Log("RightRotatingCube");
+        
+        var rotation = transform.rotation;
+        Quaternion targetRotation = rotation * Quaternion.AngleAxis(90f, Vector3.up);
+        StartCoroutine(Rotationcor(targetRotation));
     }
 
-    IEnumerator Rotationcor()
+    IEnumerator Rotationcor(Quaternion targetRotation)
     {
-        Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 90, 0));
+        //el bug está en que cada vez que esto se ejecuta está asignando el valor, por lo que no puede rotar porque no tiene una 
+        //referencia clara. Hay que conseguir una referencia general que no cambie.
+        //var rotation = transform.rotation;
+        //Quaternion targetRotation = Quaternion.Euler(new Vector3(rotation.x, rotation.y+180, rotation.z));
         while (transform.rotation != targetRotation)
         {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * 200);
@@ -88,14 +95,11 @@ public class MovieCubeController : MonoBehaviour
         yield return data.SendWebRequest();
         if (data.result == UnityWebRequest.Result.ConnectionError)
         {
-            Debug.LogError(data.error);
             print("apierror");
         }
         else
         {
-            Debug.Log(data.downloadHandler.text);
             SearchData mySearch = JsonUtility.FromJson<SearchData>(data.downloadHandler.text);
-            Debug.Log(mySearch.Search[0].Poster);
             for (int i = 0; i < mySearch.Search.Count; i++)
             {
                 _loadedMovies.Add(mySearch.Search[i]);
@@ -103,7 +107,7 @@ public class MovieCubeController : MonoBehaviour
                 yield return www.SendWebRequest();
                 if (www.result == UnityWebRequest.Result.ConnectionError)
                 {
-                    Debug.LogError(www.error);
+                    
                 }
                 else
                 {
