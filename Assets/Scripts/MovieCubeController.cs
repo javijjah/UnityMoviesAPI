@@ -13,6 +13,14 @@ public class MovieCubeController : MonoBehaviour
     private Material _testMaterial;
     private List<MovieData> _loadedMovies = new();
     private Quaternion _targetRotation;
+    System.Random rnd = new System.Random();
+    private string baselink = "https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=";
+
+    private List<string> _listOfTerms = new List<string>()
+    {
+        "Hello","Lord","Tree","Fish","Hollywood","Love","War","Time","Night","Day","Life","Death","World","Man","Woman",
+        "Child","Adventure","Journey","Dream","Mystery","Secret","Star","Game","Heart"
+    };
     
     private GameObject _caraDel;
     private GameObject _caraDet;
@@ -23,7 +31,6 @@ public class MovieCubeController : MonoBehaviour
     private Renderer _rendererDet;
     private Renderer _rendererDer;
     private Renderer _rendererIzq;
-
 
     [SerializeField] public Texture texturaDel;
     [SerializeField] public Texture texturaDet;
@@ -43,19 +50,18 @@ public class MovieCubeController : MonoBehaviour
         _rendererDet = _caraDet.GetComponent<Renderer>();
         _rendererDer = _caraDer.GetComponent<Renderer>();
         _rendererIzq = _caraIzq.GetComponent<Renderer>();
-        StartCoroutine(GetPage("https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=Lord"));
+        StartCoroutine(GetPage(GetRandomMoviePageLink()));
     }
 
     // Update is called once per frame
     void Update()
     {
-            GenerateCubeImages();
+        GenerateCubeImages();
     }
 
-    void GetRandomMoviePageLink()
+    public string GetRandomMoviePageLink()
     {
-        //todo
-        string baselink = "https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=hello";
+        return baselink + _listOfTerms[rnd.Next(_listOfTerms.Count)];
     }
 
     void GenerateCubeImages()
@@ -69,12 +75,15 @@ public class MovieCubeController : MonoBehaviour
     public void RightRotate()
     {
         Debug.Log("RightRotatingCube");
-        
         var rotation = transform.rotation;
-        Quaternion targetRotation = rotation * Quaternion.AngleAxis(90f, Vector3.up);
-        StartCoroutine(Rotationcor(targetRotation));
+            Quaternion targetRotation = rotation * Quaternion.AngleAxis(90f, Vector3.up);
+            StartCoroutine(Rotationcor(targetRotation));
     }
 
+    public void limpiarPelisCargadas()
+    {
+      _loadedMovies.Clear();
+    }
     IEnumerator Rotationcor(Quaternion targetRotation)
     {
         //el bug está en que cada vez que esto se ejecuta está asignando el valor, por lo que no puede rotar porque no tiene una 
@@ -87,9 +96,10 @@ public class MovieCubeController : MonoBehaviour
             yield return null;
         }
     }
-    
-    IEnumerator GetPage(string req)
+
+    public IEnumerator GetPage(string req)
     {
+        Debug.Log("Cadena utilizada:" + req);
         UnityWebRequest data =
             UnityWebRequest.Get(req);
         yield return data.SendWebRequest();
@@ -107,11 +117,17 @@ public class MovieCubeController : MonoBehaviour
                 yield return www.SendWebRequest();
                 if (www.result == UnityWebRequest.Result.ConnectionError)
                 {
-                    
                 }
                 else
                 {
-                    _loadedMovies[i].PosterText = DownloadHandlerTexture.GetContent(www);
+                    try
+                    {
+                        _loadedMovies[i].PosterText = DownloadHandlerTexture.GetContent(www);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log("Poster of " + _loadedMovies[i].Title + "couldn't be downloaded");
+                    }
                 }
 
                 print(i);

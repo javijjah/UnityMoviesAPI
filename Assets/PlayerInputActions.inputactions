@@ -13,23 +13,32 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Reroll",
+                    "type": "Button",
+                    "id": "e11f0a45-bdef-42d0-b158-35b3ee4e68e5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
-                    "id": "44bccb01-86f8-4349-ac4e-d95580116d02",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
+                    "id": "6da2c984-b176-4efb-8643-ca28ceb82c34",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "",
-                    "action": "Nope",
+                    "action": "Reroll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "f7abf40f-32d2-4f18-8d7d-b122e4dab632",
+                    "id": "33b19b49-7f2f-4267-8c32-591463a4aa65",
                     "path": "<Touchscreen>/Press",
                     "interactions": "",
                     "processors": "",

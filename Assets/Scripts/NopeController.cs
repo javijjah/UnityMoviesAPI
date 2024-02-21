@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 public class NopeController : MonoBehaviour
 {
@@ -11,10 +13,13 @@ public class NopeController : MonoBehaviour
         _movieCube = GameObject.Find("Moviecube");
         _movieCubeController = _movieCube.GetComponent<MovieCubeController>();
     }
-    public void Nope()
+    public void Nope(InputAction.CallbackContext context)
     {
-        Debug.Log("nope");
-        _movieCubeController.RightRotate();
+        if (context.performed)
+        {
+            Debug.Log("nope");
+            _movieCubeController.RightRotate();
+        }
     }
 
 }
