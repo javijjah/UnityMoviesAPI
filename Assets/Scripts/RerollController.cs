@@ -17,7 +17,7 @@ public class RerollController : MonoBehaviour
         if (context.performed)
         {
             Debug.Log("Reroll");
-            _movieCubeController.limpiarPelisCargadas();
+            _movieCubeController.LimpiarPelisCargadas();
             StartCoroutine(_movieCubeController.GetPage(_movieCubeController.GetRandomMoviePageLink()));
         }
     }

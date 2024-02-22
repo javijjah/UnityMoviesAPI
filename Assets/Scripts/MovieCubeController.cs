@@ -15,7 +15,8 @@ public class MovieCubeController : MonoBehaviour
     private Quaternion _targetRotation;
     System.Random rnd = new System.Random();
     private string baselink = "https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=";
-
+    private int watchedMovies = 0; 
+    
     private List<string> _listOfTerms = new List<string>()
     {
         "Hello","Lord","Tree","Fish","Hollywood","Love","War","Time","Night","Day","Life","Death","World","Man","Woman",
@@ -76,20 +77,22 @@ public class MovieCubeController : MonoBehaviour
     {
         Debug.Log("RightRotatingCube");
         var rotation = transform.rotation;
-            Quaternion targetRotation = rotation * Quaternion.AngleAxis(90f, Vector3.up);
+            //Quaternion targetRotation = rotation * Quaternion.AngleAxis(90f, Vector3.up);
+            Quaternion targetRotation = Quaternion.Euler(0, (Mathf.Round(rotation.eulerAngles.y) + 90f)%360f, 0);
             StartCoroutine(Rotationcor(targetRotation));
+            
     }
 
-    public void limpiarPelisCargadas()
+    public void actualizarCubo()
+    {
+        
+    }
+    public void LimpiarPelisCargadas()
     {
       _loadedMovies.Clear();
     }
     IEnumerator Rotationcor(Quaternion targetRotation)
     {
-        //el bug está en que cada vez que esto se ejecuta está asignando el valor, por lo que no puede rotar porque no tiene una 
-        //referencia clara. Hay que conseguir una referencia general que no cambie.
-        //var rotation = transform.rotation;
-        //Quaternion targetRotation = Quaternion.Euler(new Vector3(rotation.x, rotation.y+180, rotation.z));
         while (transform.rotation != targetRotation)
         {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * 200);
