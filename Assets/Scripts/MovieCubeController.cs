@@ -5,24 +5,34 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
-
+/**
+ * Gestor principal del cubo central que muestra las películas.
+ */
 public class MovieCubeController : MonoBehaviour
 {
-    private int _actualFace;
-    private GameObject _movieCube;
-    private Material _testMaterial;
+    /**
+     * Lista que guarda las películas cargadas que tenemos
+     */
     private List<MovieData> _loadedMovies = new();
-    private Quaternion _targetRotation;
-    System.Random rnd = new System.Random();
+    /**
+     * Nuestro gestor de números aleatorios
+     */
+    System.Random rnd = new();
+    /**
+     * Link base para llamar a la API
+     */
     private string baselink = "https://www.omdbapi.com/?apikey=bec0dc5f&type=movie&page=1&y=2023&s=";
-    private int watchedMovies = 0; 
-    
+
+    /**
+     * Lista de términos que luego serán escogidos de forma aleatoria para mostar películas que los incluyan
+     */
     private List<string> _listOfTerms = new List<string>()
     {
         "Hello","Lord","Tree","Fish","Hollywood","Love","War","Time","Night","Day","Life","Death","World","Man","Woman",
         "Child","Adventure","Journey","Dream","Mystery","Secret","Star","Game","Heart"
     };
     
+    //Estas caras serían los Quads que muestran las películas, y con el rendered podríamos cambiar su textura
     private GameObject _caraDel;
     private GameObject _caraDet;
     private GameObject _caraDer;
@@ -42,7 +52,6 @@ public class MovieCubeController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _movieCube = GameObject.Find("Moviecube");
         _caraDel = GameObject.Find("caraDel");
         _caraDet = GameObject.Find("caraDet");
         _caraDer = GameObject.Find("caraDer");
@@ -59,12 +68,16 @@ public class MovieCubeController : MonoBehaviour
     {
         GenerateCubeImages();
     }
-
+    /**
+     * Obtiene un valor random para buscar en la API de la lista
+     */
     public string GetRandomMoviePageLink()
     {
         return baselink + _listOfTerms[rnd.Next(_listOfTerms.Count)];
     }
-
+    /**
+     * Regenera las imágenes de los quads a las sostenidas en las texturas
+     */
     void GenerateCubeImages()
     {
         _rendererDel.material.SetTexture(MainTex, texturaDel);
@@ -72,25 +85,27 @@ public class MovieCubeController : MonoBehaviour
         _rendererDer.material.SetTexture(MainTex, texturaDer);
         _rendererIzq.material.SetTexture(MainTex, texturaIzq);
     }
-
+    /**
+     * Función padre de la corrutina que gestiona el giro de nuestro cubo
+     */
     public void RightRotate()
     {
         Debug.Log("RightRotatingCube");
         var rotation = transform.rotation;
-            //Quaternion targetRotation = rotation * Quaternion.AngleAxis(90f, Vector3.up);
             Quaternion targetRotation = Quaternion.Euler(0, (Mathf.Round(rotation.eulerAngles.y) + 90f)%360f, 0);
             StartCoroutine(Rotationcor(targetRotation));
             
     }
-
-    public void actualizarCubo()
-    {
-        
-    }
+    /**
+     * Limpia la lista de pelis cargadas para dejar espacio a otras
+     */
     public void LimpiarPelisCargadas()
     {
       _loadedMovies.Clear();
     }
+    /**
+     * Corrutina que ejecuta el giro por frame de nuestro cubo
+     */
     IEnumerator Rotationcor(Quaternion targetRotation)
     {
         while (transform.rotation != targetRotation)
@@ -99,7 +114,9 @@ public class MovieCubeController : MonoBehaviour
             yield return null;
         }
     }
-
+    /**
+     * Corrutina la cual recupera una página de la API, introduciéndole el parámetro de búsqueda
+     */
     public IEnumerator GetPage(string req)
     {
         Debug.Log("Cadena utilizada:" + req);
@@ -140,7 +157,9 @@ public class MovieCubeController : MonoBehaviour
             FillCubeTextures();
         }
     }
-
+    /**
+     * Función que asigna las texturas las 4 primeras películas cargadas a las texturas del cubo
+     */
     public void FillCubeTextures()
     {
         texturaDel = _loadedMovies[0].PosterText;
@@ -148,7 +167,9 @@ public class MovieCubeController : MonoBehaviour
         texturaDer = _loadedMovies[2].PosterText;
         texturaIzq = _loadedMovies[3].PosterText;
     }
-
+    /**
+     * Clase que recibe los datos de la búsqueda (El JSON general)
+     */
     [Serializable]
     public class SearchData
     {
@@ -156,7 +177,9 @@ public class MovieCubeController : MonoBehaviour
         public string totalResults;
         public string Response;
     }
-
+    /**
+     * Clase que almacena los datos de las películas recuperadas por la API
+     */
     [Serializable]
     public class MovieData
     {
